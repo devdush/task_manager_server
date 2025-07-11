@@ -2,6 +2,7 @@ import { IUser, TaskUsers } from "../models/Users.model";
 import bcrypt from "bcryptjs";
 import crypto from "crypto";
 import { sendVerificationEmail } from "../utils/verification-email-service";
+import jwt from "jsonwebtoken";
 export class UsersService {
   static async registerUser(
     firstName: string,
@@ -24,6 +25,9 @@ export class UsersService {
         password: hashedPassword,
         role,
       });
+
+      
+
       await user.save();
       await sendVerificationEmail(email, verificationToken);
 
@@ -47,9 +51,30 @@ export class UsersService {
       if (!isMatch) {
         return { success: false, message: "Invalid credentials" };
       }
-
+      const token = jwt.sign(
+        {
+          id: user.id,
+          role: user.role,
+          email: user.email,
+          firstName: user.firstName,
+        },
+        "CLIENT_SECRET_KEY",
+        { expiresIn: "500m" }
+      );
       console.log("User logged in:", user);
-      return { success: true, message: "User logged in successfully" };
+      return {
+        success: true,
+        message: "User logged in successfully",
+        user: {
+          id: user._id,
+          email: user.email,
+          firstName: user.firstName,
+          lastName: user.lastName,
+          role: user.role,
+          profilePicture: user.profilePicture,
+          token: token,
+        },
+      };
     } catch (error) {
       console.error("Error logging in user:", error);
       return { success: false, message: "Error logging in user" };

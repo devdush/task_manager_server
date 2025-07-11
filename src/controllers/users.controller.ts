@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import { UsersService } from "../services/users.service";
-
+import { uploadToS3 } from "../utils/upload";
+import expressFileUpload from "express-fileupload";
 export class UsersController {
   static async registerUser(req: Request, res: Response): Promise<void> {
     try {
@@ -9,20 +10,32 @@ export class UsersController {
         lastName,
         email,
         phoneNumber,
-        profilePicture,
+
         password,
         role = "user",
       } = req.body;
+
+      if (!req.files || !req.files.profilePicture) {
+        res
+          .status(400)
+          .json({ success: false, message: "Profile picture is required" });
+        return;
+      }
+
+      const file = req.files.profilePicture as expressFileUpload.UploadedFile;
+
+      const s3Url = await uploadToS3(file.data, file.name, file.mimetype);
 
       const result = await UsersService.registerUser(
         firstName,
         lastName,
         email,
         phoneNumber,
-        profilePicture,
+        s3Url,
         password,
         role
       );
+
       res.status(201).json(result);
     } catch (error) {
       console.error("Error registering user:", error);

@@ -1,0 +1,20 @@
+import express from "express";
+import mongoose from "mongoose";
+import cors from "cors";
+import { usersRoutes } from "./routes/users.routes";
+
+const app = express();
+app.use(express.json());
+app.use(cors());
+
+app.use("/api/users", usersRoutes);
+
+const MONGO_URI = process.env.MONGO_URI || "";
+console.log("MONGO_URI:", MONGO_URI);
+
+mongoose
+  .connect(MONGO_URI)
+  .then(() => console.log("MongoDB connected"))
+  .catch((err) => console.error("MongoDB error:", err));
+
+export default app;

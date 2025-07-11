@@ -6,7 +6,7 @@ const transporter = nodemailer.createTransport({
   secure: true,
   auth: {
     user: process.env.EMAIL_USER!,
-    pass: process.env.EMAIL_PASS!, // Use .env for security
+    pass: process.env.EMAIL_PASS!, 
   },
 });
 
@@ -25,8 +25,8 @@ export const sendVerificationEmail = async (email: string, token: string): Promi
 
   try {
     await transporter.sendMail(mailOptions);
-    console.log("✅ Verification email sent at:", new Date().toISOString());
+    console.log("Verification email sent at:", new Date().toISOString());
   } catch (error) {
-    console.error("❌ Error sending email:", error);
+    console.error("Error sending email:", error);
   }
 };

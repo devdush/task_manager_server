@@ -23,5 +23,5 @@ export const uploadToS3 = async (
 
   const result = await upload.done();
   // @ts-ignore
-  return result.Location; // public URL
+  return result.Location; 
 };

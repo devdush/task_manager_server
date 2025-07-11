@@ -34,4 +34,82 @@ export class TasksService {
       return { success: false, message: "Error creating task" };
     }
   }
+  static async getTaskById(taskId: string) {
+    try {
+      const task = await TaskModel.findById(taskId).populate(
+        "assignedTo",
+        "firstName lastName email"
+      );
+      if (!task) {
+        return { success: false, message: "Task not found" };
+      }
+      return { success: true, data: task };
+    } catch (error) {
+      console.error("Error fetching task:", error);
+      return { success: false, message: "Error fetching task" };
+    }
+  }
+  static async getAllTasks() {
+    try {
+      const tasks = await TaskModel.find().populate(
+        "assignedTo",
+        "firstName lastName email"
+      );
+      return { success: true, data: tasks };
+    } catch (error) {
+      console.error("Error fetching tasks:", error);
+      return { success: false, message: "Error fetching tasks" };
+    }
+  }
+  static async getTasksByUser(userId: string) {
+    try {
+      const tasks = await TaskModel.find({ assignedTo: userId }).populate(
+        "assignedTo",
+        "firstName lastName email"
+      );
+      return { success: true, data: tasks };
+    } catch (error) {
+      console.error("Error fetching tasks by user:", error);
+      return { success: false, message: "Error fetching tasks by user" };
+    }
+  }
+  static async updateTask(
+    taskId: string,
+    updates: Partial<{
+      title: string;
+      description: string;
+      startDate: Date;
+      endDate: Date;
+      status: string;
+      assignedTo: string[];
+      attachments: string[];
+      priority: string;
+    }>
+  ) {
+    try {
+      const updatedTask = await TaskModel.findByIdAndUpdate(taskId, updates, {
+        new: true,
+      });
+      if (!updatedTask) {
+        return { success: false, message: "Failed to update task" };
+      }
+      return { success: true, data: updatedTask };
+    } catch (error) {
+      console.error("Error updating task:", error);
+      return { success: false, message: "Error updating task" };
+    }
+  }
+  static async deleteTask(taskId: string) {
+    try {
+      const deletedTask = await TaskModel.findByIdAndDelete(taskId);
+      if (!deletedTask) {
+        return { success: false, message: "Failed to delete task" };
+      }
+      return { success: true, message: "Task deleted successfully" };
+    } catch (error) {
+      console.error("Error deleting task:", error);
+      return { success: false, message: "Error deleting task" };
+    }
+  }
+  
 }

@@ -1,7 +1,9 @@
-import { Request, Response } from "express";
+import { Request, Response, NextFunction } from "express";
 import { UsersService } from "../services/users.service";
 import { uploadToS3 } from "../utils/upload";
 import expressFileUpload from "express-fileupload";
+import jwt from "jsonwebtoken";
+
 export class UsersController {
   static async registerUser(req: Request, res: Response): Promise<void> {
     try {
@@ -10,7 +12,6 @@ export class UsersController {
         lastName,
         email,
         phoneNumber,
-
         password,
         role = "user",
       } = req.body;
@@ -36,6 +37,7 @@ export class UsersController {
         role
       );
 
+      console.log("User registration result:", result);
       res.status(201).json(result);
     } catch (error) {
       console.error("Error registering user:", error);
@@ -44,10 +46,10 @@ export class UsersController {
         .json({ success: false, message: "Internal server error" });
     }
   }
+
   static async loginUser(req: Request, res: Response): Promise<void> {
     try {
       const { email, password } = req.body;
-
       const result = await UsersService.loginUser(email, password);
       if (result.success) {
         res.status(200).json(result);
@@ -56,6 +58,45 @@ export class UsersController {
       }
     } catch (error) {
       console.error("Error logging in user:", error);
+      res
+        .status(500)
+        .json({ success: false, message: "Internal server error" });
+    }
+  }
+
+  static authMiddleware(req: Request, res: Response, next: NextFunction): void {
+    const authHeader = req.headers["authorization"];
+    const token = authHeader && authHeader.split(" ")[1];
+
+    if (!token) {
+      res.status(401).json({
+        success: false,
+        message: "Unauthorized user!",
+      });
+      return;
+    }
+
+    try {
+      const decoded = jwt.verify(token, "CLIENT_SECRET_KEY");
+      (req as any).user = decoded;
+      next();
+    } catch (error) {
+      res.status(403).json({
+        success: false,
+        message: "Unauthorized user!",
+      });
+    }
+  }
+  static async getUsers(req: Request, res: Response): Promise<void> {
+    try {
+      const result = await UsersService.getUsers();
+      if (result.success) {
+        res.status(200).json(result);
+      } else {
+        res.status(500).json(result);
+      }
+    } catch (error) {
+      console.error("Error fetching users:", error);
       res
         .status(500)
         .json({ success: false, message: "Internal server error" });

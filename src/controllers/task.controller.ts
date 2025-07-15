@@ -122,4 +122,53 @@ export class TaskController {
         .json({ success: false, message: "Internal server error" });
     }
   }
+  static async taskDataForChart(req: Request, res: Response) {
+    try {
+      const result = await TasksService.taskDataForChart();
+      if (result.success) {
+        res.status(200).json(result);
+      } else {
+        res.status(500).json(result);
+      }
+    } catch (error) {
+      console.error("Error fetching task data for chart:", error);
+      res
+        .status(500)
+        .json({ success: false, message: "Internal server error" });
+    }
+  }
+  static async taskDataForUserChart(req: Request, res: Response) {
+    try {
+      const userId = req.params.userId;
+      const result = await TasksService.taskDataForUserChart(userId);
+      if (result.success) {
+        res.status(200).json(result);
+      } else {
+        res.status(500).json(result);
+      }
+    } catch (error) {
+      console.error("Error fetching task data for user chart:", error);
+      res
+        .status(500)
+        .json({ success: false, message: "Internal server error" });
+    }
+  }
+  static async updateTaskStatus(req: Request, res: Response) {
+    try {
+      const taskId = req.params.id;
+      const { status } = req.body;
+
+      const result = await TasksService.updateTaskStatus(taskId, status);
+      if (result.success) {
+        res.status(200).json(result);
+      } else {
+        res.status(400).json(result);
+      }
+    } catch (error) {
+      console.error("Error updating task status:", error);
+      res
+        .status(500)
+        .json({ success: false, message: "Internal server error" });
+    }
+  }
 }

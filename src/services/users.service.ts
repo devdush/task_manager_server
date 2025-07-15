@@ -26,8 +26,6 @@ export class UsersService {
         role,
       });
 
-      
-
       await user.save();
       await sendVerificationEmail(email, verificationToken);
 
@@ -78,6 +76,16 @@ export class UsersService {
     } catch (error) {
       console.error("Error logging in user:", error);
       return { success: false, message: "Error logging in user" };
+    }
+  }
+  static async getUsers() {
+    try {
+      const users = await TaskUsers.find({ role: "user" })
+      console.log("Fetched users:", users);
+      return { success: true, data: users };
+    } catch (error) {
+      console.error("Error fetching users:", error);
+      return { success: false, message: "Error fetching users" };
     }
   }
 }

@@ -12,7 +12,7 @@ export class BakeryOrdersService {
         cashierId: cashierId,
         items,
         totalAmount,
-        paymentMethod
+        paymentMethod,
       });
 
       return { success: true, data: order };

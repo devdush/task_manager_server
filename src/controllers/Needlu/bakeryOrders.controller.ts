@@ -3,7 +3,12 @@ import { Request, Response } from "express";
 export class BakeryOrdersController {
   static async createOrder(req: Request, res: Response) {
     const { cashierId, items, totalAmount, paymentMethod } = req.body;
-    console.log("Creating bakery order:", { cashierId, items, totalAmount, paymentMethod });
+    console.log("Creating bakery order:", {
+      cashierId,
+      items,
+      totalAmount,
+      paymentMethod,
+    });
     const result = await BakeryOrdersService.createOrder(
       cashierId,
       items,
@@ -19,6 +24,42 @@ export class BakeryOrdersController {
   static async getAllOrders(req: Request, res: Response) {
     const result = await BakeryOrdersService.getAllOrders();
     if (result.success) {
+      res.status(200).json(result.data);
+    } else {
+      res.status(500).json(result);
+    }
+  }
+  static async getOrdersOfThisWeekDayByDay(req: Request, res: Response) {
+    const result = await BakeryOrdersService.getOrdersOfThisWeekDayByDay();
+    if (result.success) {
+      res.status(200).json(result.data);
+    } else {
+      res.status(500).json(result);
+    }
+  }
+  static async getTodayOrderDetails(req: Request, res: Response) {
+    const result = await BakeryOrdersService.getTodayOrderDetails();
+    if (result.success) {
+      res.status(200).json(result.data);
+    } else {
+      res.status(500).json(result);
+    }
+  }
+  static async getTodaySalesByCategory(req: Request, res: Response) {
+    const result = await BakeryOrdersService.getTodaySalesByCategory();
+    if (result.success) {
+      res.status(200).json(result.data);
+    } else {
+      res.status(500).json(result);
+    }
+  }
+  static async getDailyCategoryWiseSalesForCurrentMonth(
+    req: Request,
+    res: Response
+  ) {
+    const result =
+      await BakeryOrdersService.getDailyCategoryWiseSalesForCurrentMonth();
+    if (result) {
       res.status(200).json(result.data);
     } else {
       res.status(500).json(result);

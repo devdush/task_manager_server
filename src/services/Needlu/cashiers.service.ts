@@ -1,13 +1,18 @@
 import { Cashier } from "../../models/Needlu/Cashiers.model";
 
 export class CashierService {
-  static async createCashier(name: string, username: string, password: string) {
+  static async createCashier(
+    name: string,
+    username: string,
+    password: string,
+    role: string
+  ) {
     try {
       const newCashier = await Cashier.create({
         name,
         username,
         password,
-        role: "cashier",
+        role,
       });
       return { success: true, data: newCashier };
     } catch (error) {

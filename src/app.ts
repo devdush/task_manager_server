@@ -9,6 +9,11 @@ import { productsRoutes } from "./routes/Needlu/products.routes";
 import { cashiersRoutes } from "./routes/Needlu/cashier.routes";
 import { bakeryOrders } from "./routes/Needlu/bakeryOrders.routes";
 import { loginRoutes } from "./routes/Needlu/login.routes";
+import { itemTypesRouter } from "./routes/Needlu/itemTypes.routes";
+import { stuartOrdersRoutes } from "./routes/Needlu/stuartOrders.routes";
+import { tablesRoutes } from "./routes/Needlu/tables.routes";
+import { kotRoutes } from "./routes/Needlu/kot.routes";
+
 const app = express();
 app.use(express.json());
 
@@ -47,6 +52,10 @@ app.use("/api/pos-products", productsRoutes);
 app.use("/api/pos-cashiers", cashiersRoutes);
 app.use("/api/pos-bakery-orders", bakeryOrders);
 app.use("/api/pos-login", loginRoutes);
+app.use("/api/pos-item-types", itemTypesRouter);
+app.use("/api/pos-stuart-orders",stuartOrdersRoutes);
+app.use("/api/pos-tables", tablesRoutes);
+app.use("/api/pos-kot", kotRoutes);
 
 const MONGO_URI = process.env.MONGO_URI || "";
 console.log("MONGO_URI:", MONGO_URI);

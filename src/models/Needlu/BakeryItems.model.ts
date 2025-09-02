@@ -6,6 +6,7 @@ interface IBakeryItem extends Document {
   availableQuantity: number;
   categoryId: Types.ObjectId;
   productImage: string;
+  itemTypeId: Types.ObjectId;
 }
 
 const BakeryItemSchema = new Schema<IBakeryItem>(
@@ -19,6 +20,11 @@ const BakeryItemSchema = new Schema<IBakeryItem>(
       required: true,
     },
     productImage: { type: String, required: true },
+    itemTypeId: {
+      type: Schema.Types.ObjectId,
+      ref: "ItemType",
+      required: true,
+    },
   },
   {
     toJSON: { virtuals: true },
@@ -28,6 +34,13 @@ const BakeryItemSchema = new Schema<IBakeryItem>(
 BakeryItemSchema.virtual("categoryInfo", {
   ref: "POSCategory",
   localField: "categoryId",
+  foreignField: "_id",
+  justOne: true,
+});
+
+BakeryItemSchema.virtual("itemTypeInfo", {
+  ref: "ItemType",
+  localField: "itemTypeId",
   foreignField: "_id",
   justOne: true,
 });

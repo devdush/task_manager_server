@@ -23,6 +23,7 @@ app.use(
       const allowedOrigins = [
         "http://localhost:3000",
         "http://bakerypos.s3-website.eu-north-1.amazonaws.com",
+        "http://bakeryposneedlu.s3-website.eu-north-1.amazonaws.com"
       ];
       if (!origin || allowedOrigins.includes(origin)) {
         callback(null, true);

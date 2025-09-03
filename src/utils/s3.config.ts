@@ -10,5 +10,6 @@ const s3Client = new S3Client({
     secretAccessKey: process.env.REACT_APP_AWS_SECRET_ACCESS_KEY!,
   },
 });
+console.log("S3 Client Configured", s3Client);
 
 export default s3Client;

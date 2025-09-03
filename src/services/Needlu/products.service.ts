@@ -7,16 +7,18 @@ export class BakeryItemService {
     price: number,
     categoryId: string,
     availableQuantity: number,
-    productImage: string
+    productImage: string,
+    itemTypeId: string
   ) {
     try {
-      console.log(itemName, price, categoryId, availableQuantity, productImage);
+      console.log(itemName, price, categoryId, availableQuantity, productImage, itemTypeId);
       const newProduct = await BakeryItem.create({
         itemName,
         price,
         categoryId,
         availableQuantity,
-        productImage
+        productImage,
+        itemTypeId
       });
       console.log("New product created:", newProduct);
       if (!newProduct) {
